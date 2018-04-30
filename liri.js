@@ -26,12 +26,8 @@ var filename = './log.txt';
 // NPM module used for logging solution.
 var log = require('simple-node-logger').createSimpleFileLogger(filename);
 
-// All log information printed to log.txt.
+// Bonus log text file
 log.setLevel('all');
-
-// Controller and required parameters.
-// ____________________________________________________________________________________
-
 
 // Action requested.
 var action = process.argv[2];
@@ -42,49 +38,45 @@ var argument = "";
 
 // Controller function that determines what action is taken,
 // and specific data to complete that action.
-doSomething(action, argument);
+determineAction(action, argument);
 
 // Switch operation used to determin which action to take.
-function doSomething(action, argument) {
+function determineAction(action, argument) {
 
-	/* Controls optional third argument.
-	Defines specific data relating to the action.
-	For example, when requesting song information,
-	you can pass in a song title.
-	*/ 
+// Controls optional third argument
 	argument = getThirdArgument();
 
 	switch (action) {
 		
-		// Gets list of tweets.
+		// Lists tweets and output "my-tweets"
 		case "my-tweets": 
-		getMyTweets();
+		MyTweets();
 		break;
 
-		// Gets song information.
+		// Song information and output "spotify-this-song"
 		case "spotify-this-song":
 		
-		// First gets song title argument.
+		// Song title argument
 		var songTitle = argument;
 
-		// If no song title provided, defaults to specific song.
+        // Default to "The Sign" if no song provided
 		if (songTitle === "") {
 			lookupSpecificSong();
 
 		// Else looks up song based on song title.
 		} else {
 			// Get song information from Spotify.
-			getSongInfo(songTitle);
+			SongInfo(songTitle);
 		}
 		break;
 
 		// Gets movie information.
 		case "movie-this":
 
-		// First gets movie title argument.
+		// movie title argument.
 		var movieTitle = argument;
 
-		// If no movie title provided, defaults to specific movie.
+		// Default movie to "Mr. Nobody" when no movie input
 		if (movieTitle === "") {
 			getMovieInfo("Mr. Nobody");
 
@@ -101,7 +93,7 @@ function doSomething(action, argument) {
 	}
 }
 
-// Returns optional third argument, for example,
+// Returns optional third argument
 // when requesting song information, include a song title.
 function getThirdArgument() {
 
@@ -116,7 +108,7 @@ function getThirdArgument() {
 }
 
 // Function to show my last 20 tweets.
-function getMyTweets() {
+function MyTweets() {
 	
 	// Passes Twitter keys into call to Twitter API.
 	var client = new Twitter(twitterKeysFile.twitterKeys);
@@ -124,7 +116,7 @@ function getMyTweets() {
 	// Search parameters includes my tweets up to last 20 tweets;
 	var params = {q: '@hkirse', count: 20};
 
-	// Shows up to last 20 tweets and when created in terminal.
+	// Shows up to last 20 tweets
 	client.get('search/tweets', params, function(error, tweets, response) {
 	  if (!error) {
 
@@ -142,7 +134,7 @@ function getMyTweets() {
 }
 
 // Calls Spotify API to retrieve song information for song title.
-function getSongInfo(songTitle) {
+function SongInfo(songTitle) {
 
 	// Calls Spotify API to retrieve a track.
 	spotify.search({type: 'track', query: songTitle}, function(err, data) {
@@ -151,13 +143,6 @@ function getSongInfo(songTitle) {
 			return
 		}
 
-		/* The Spotify node module defaults to 20 no matter what.
-		Attempted to add a limit, which seems to do nothing.
-		Homework requirements suggest we should only return one song.
-		Used array properties to retrict songs returns.
-		There could very well be a better way to do this.
-		But it's as close to requirements I could get using Spotify module.
-		*/
 		var artistsArray = data.tracks.items[0].album.artists;
 
 		// Array to hold artist names, when more than one artist exists for a song.
@@ -168,7 +153,7 @@ function getSongInfo(songTitle) {
 			artistsNames.push(artistsArray[i].name);
 		}
 
-		// Converts artists array to string, and makes it pretty.
+		// Converts artists array to string
 		var artists = artistsNames.join(", ");
 
 		// Prints the artist(s), track name, preview url, and album name.
@@ -202,11 +187,11 @@ function lookupSpecificSong() {
 // If no movie title provided, defaults to the movie, Mr. Nobody.
 function getMovieInfo(movieTitle) {
 
-	// Runs a request to the OMDB API with the movie specified.
-	var queryUrl = "http://www.omdbapi.com/?t=" + movieTitle + "&y=&plot=short&tomatoes=true&r=json";
+	// Can't get this to run.  API key included
+	var queryUrl = "http://www.omdbapi.com/?t=" + movieTitle + "?i=tt3896198&apikey=74d5aae0";
 
 	request(queryUrl, function(error, response, body) {
-	  // If the request is successful...
+	  // Correct request or error
 	  if (!error && response.statusCode === 200) {
 	    
 	    // Parses the body of the site and recovers movie info.
@@ -221,8 +206,7 @@ function getMovieInfo(movieTitle) {
 	    logOutput("Plot: " + movie.Plot);
 	    logOutput("Actors: " + movie.Actors);
 
-	    // Had to set to array value, as there seems to be a bug in API response,
-	    // that always returns N/A for movie.tomatoRating.
+
 	    logOutput("Rotten Tomatoes Rating: " + movie.Ratings[2].Value);
 	    logOutput("Rotten Tomatoes URL: " + movie.tomatoURL);
 	  }
@@ -248,7 +232,7 @@ function doWhatItSays() {
 			argument = randomArray[1];
 
 			// Calls main controller to do something based on action and argument.
-			doSomething(action, argument);
+			determineAction(action, argument);
 		}
 	});
 }
