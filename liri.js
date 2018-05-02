@@ -12,7 +12,7 @@ var twitterKeysFile = require("./keys.js");
 // NPM module used 
 //to access Spotify API.
 //npm install --save node-spotify-api
-var spotify = require("spotify");
+//var spotify = require("spotify");
 
 // NPM module used to access OMDB API.
 var request = require("request");
@@ -24,10 +24,10 @@ var fs = require("fs");
 var filename = './log.txt';
 
 // NPM module used for logging solution.
-var log = require('simple-node-logger').createSimpleFileLogger(filename);
+//var log = require('simple-node-logger').createSimpleFileLogger(filename);
 
 // Bonus log text file
-log.setLevel('all');
+//log.setLevel('all');
 
 // Action requested.
 var action = process.argv[2];
@@ -50,7 +50,7 @@ function determineAction(action, argument) {
 		
 		// Lists tweets and output "my-tweets"
 		case "my-tweets": 
-		MyTweets();
+		myTweets();
 		break;
 
 		// Song information and output "spotify-this-song"
@@ -108,24 +108,24 @@ function getThirdArgument() {
 }
 
 // Function to show my last 20 tweets.
-function MyTweets() {
-	
+function myTweets() {
 	// Passes Twitter keys into call to Twitter API.
-	var client = new Twitter(twitterKeysFile.twitterKeys);
+	var client = new Twitter(twitterKeysFile.twitter);
 
 	// Search parameters includes my tweets up to last 20 tweets;
 	var params = {q: '@hkirse', count: 20};
 
 	// Shows up to last 20 tweets
-	client.get('search/tweets', params, function(error, tweets, response) {
+	client.get('statuses/user_timeline', params, function(error, tweets, response) {
 	  if (!error) {
 
-	  	// Loops through tweets and prints out tweet text and creation date.
-	  	for (var i = 0; i < tweets.statuses.length; i++) {
-	  		var tweetText = tweets.statuses[i].text;
-	  		logOutput("Tweet Text: " + tweetText);
-	  		var tweetCreationDate = tweets.statuses[i].created_at;
-	  		logOutput("Tweet Creation Date: " + tweetCreationDate);
+	  	//Loops through tweets and prints out tweet text and creation date.
+	  	for (var i = 0; i < tweets.length; i++) {
+			console.log("Tweet Text: " + tweets[i].text);
+	  		// var tweetText = tweets.statuses[i].text;
+	  		
+	  		// var tweetCreationDate = tweets.statuses[i].created_at;
+	  		// logOutput("Tweet Creation Date: " + tweetCreationDate);
 	  	}
 	  } else {
 	  	logOutput(error);
