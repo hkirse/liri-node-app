@@ -7,23 +7,23 @@ var Spotify = require("node-spotify-api");
 var request = require("request");
 var fs = require("fs");
 
-var command = process.argv[2];
+var action = process.argv[2];
 var nodeArgs = process.argv;
 
 var spotify = new Spotify(keys.spotify);
 var client = new Twitter(keys.twitter);
 
 //node commands specific to API call
-if (command === "my-tweets") {
+if (action === "my-tweets") {
     tweet();
 }
-else if (command === "spotify-this-song") {
+else if (action === "spotify-this-song") {
     song();
 }
-else if (command === "movie-this") {
+else if (action === "movie-this") {
     movie();
 }
-else if (command === "do-what-it-says") {
+else if (action === "do-what-it-says") {
     random();
 }
 
